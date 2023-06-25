@@ -164,3 +164,38 @@ function detectCollision(a, b) {
            a.y < b.y + b.height &&  //a's top left corner doesn't reach b's bottom left corner
            a.y + a.height > b.y;    //a's bottom left corner passes b's top left corner
 }
+window.onload = function() {
+    board = document.getElementById("board");
+    board.height = boardHeight;
+    board.width = boardWidth;
+
+    context = board.getContext("2d");
+
+    dinoImg = new Image();
+    dinoImg.src = "./img/dino.png";
+    dinoImg.onload = function() {
+        context.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
+    }
+
+    // ...
+
+    requestAnimationFrame(update);
+    setInterval(placeCactus, 1000);
+    document.addEventListener("keydown", moveDino);
+    document.addEventListener("touchstart", moveDino); // Dodajte ovu liniju za podršku za dodirne događaje
+}
+
+function moveDino(e) {
+    if (gameOver) {
+        return;
+    }
+
+    if ((e.code == "Space" || e.code == "ArrowUp" || e.type == "touchstart") && dino.y == dinoY) {
+        velocityY = -10;
+    }
+    else if (e.code == "ArrowDown" && dino.y == dinoY) {
+        //duck
+    }
+}
+
+// ...
