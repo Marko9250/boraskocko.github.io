@@ -12,10 +12,10 @@ let dinoY = boardHeight - dinoHeight;
 let dinoImg;
 
 let dino = {
-    x : dinoX,
-    y : dinoY,
-    width : dinoWidth,
-    height : dinoHeight
+    x: dinoX,
+    y: dinoY,
+    width: dinoWidth,
+    height: dinoHeight
 }
 
 //cactus
@@ -36,12 +36,12 @@ let cactus3Img;
 //physics
 let velocityX = -8; //cactus moving left speed
 let velocityY = 0;
-let gravity = .4;
+let gravity = 0.4;
 
 let gameOver = false;
 let score = 0;
 
-window.onload = function() {
+window.onload = function () {
     board = document.getElementById("board");
     board.height = boardHeight;
     board.width = boardWidth;
@@ -49,12 +49,9 @@ window.onload = function() {
     context = board.getContext("2d"); //used for drawing on the board
 
     //draw initial dinosaur
-    // context.fillStyle="green";
-    // context.fillRect(dino.x, dino.y, dino.width, dino.height);
-
     dinoImg = new Image();
     dinoImg.src = "./img/dino.png";
-    dinoImg.onload = function() {
+    dinoImg.onload = function () {
         context.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
     }
 
@@ -69,7 +66,10 @@ window.onload = function() {
 
     requestAnimationFrame(update);
     setInterval(placeCactus, 1000); //1000 milliseconds = 1 second
+
+    // Add event listeners
     document.addEventListener("keydown", moveDino);
+    document.addEventListener("touchstart", handleTouch);
 }
 
 function update() {
@@ -93,15 +93,15 @@ function update() {
         if (detectCollision(dino, cactus)) {
             gameOver = true;
             dinoImg.src = "./img/dino-dead.png";
-            dinoImg.onload = function() {
+            dinoImg.onload = function () {
                 context.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
             }
         }
     }
 
     //score
-    context.fillStyle="black";
-    context.font="20px courier";
+    context.fillStyle = "black";
+    context.font = "20px courier";
     score++;
     context.fillText(score, 5, 20);
 }
@@ -118,7 +118,23 @@ function moveDino(e) {
     else if (e.code == "ArrowDown" && dino.y == dinoY) {
         //duck
     }
+}
 
+function handleTouch(e) {
+    if (gameOver) {
+        return;
+    }
+
+    const touchY = e.touches[0].clientY;
+    const screenHeight = window.innerHeight;
+
+    if (touchY < screenHeight * 0.5 && dino.y == dinoY) {
+        // Jump if the touch is in the top half of the screen and the dino is on the ground
+        velocityY = -10;
+    } else if (touchY > screenHeight * 0.8 && dino.y == dinoY) {
+        // Duck if the touch is in the bottom fifth of the screen and the dino is on the ground
+        // Add ducking behavior if needed
+    }
 }
 
 function placeCactus() {
@@ -128,26 +144,26 @@ function placeCactus() {
 
     //place cactus
     let cactus = {
-        img : null,
-        x : cactusX,
-        y : cactusY,
-        width : null,
+        img: null,
+        x: cactusX,
+        y: cactusY,
+        width: null,
         height: cactusHeight
     }
 
     let placeCactusChance = Math.random(); //0 - 0.9999...
 
-    if (placeCactusChance > .90) { //10% you get cactus3
+    if (placeCactusChance > 0.90) { //10% you get cactus3
         cactus.img = cactus3Img;
         cactus.width = cactus3Width;
         cactusArray.push(cactus);
     }
-    else if (placeCactusChance > .70) { //30% you get cactus2
+    else if (placeCactusChance > 0.70) { //30% you get cactus2
         cactus.img = cactus2Img;
         cactus.width = cactus2Width;
         cactusArray.push(cactus);
     }
-    else if (placeCactusChance > .50) { //50% you get cactus1
+    else if (placeCactusChance > 0.50) { //50% you get cactus1
         cactus.img = cactus1Img;
         cactus.width = cactus1Width;
         cactusArray.push(cactus);
@@ -160,7 +176,8 @@ function placeCactus() {
 
 function detectCollision(a, b) {
     return a.x < b.x + b.width &&   //a's top left corner doesn't reach b's top right corner
-           a.x + a.width > b.x &&   //a's top right corner passes b's top left corner
-           a.y < b.y + b.height &&  //a's top left corner doesn't reach b's bottom left corner
-           a.y + a.height > b.y;    //a's bottom left corner passes b's top left corner
+        a.x + a.width > b.x &&   //a's top right corner passes b's top left corner
+        a.y < b.y + b.height &&  //a's top left corner doesn't reach b's bottom left corner
+        a.y + a.height > b.y;    //a's bottom left corner passes b's top left corner
 }
+
