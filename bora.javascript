@@ -199,3 +199,40 @@ function moveDino(e) {
 }
 
 // ...
+// ...
+
+let gameOverImg;
+let resetImg;
+
+// ...
+
+window.onload = function() {
+    // ...
+
+    gameOverImg = new Image();
+    gameOverImg.src = "./img/game-over.png";
+
+    resetImg = new Image();
+    resetImg.src = "./img/reset.png";
+    resetImg.onload = function() {
+        context.drawImage(resetImg, boardWidth/2 - resetImg.width/2, boardHeight/2 + 20);
+    }
+
+    // ...
+}
+
+// ...
+
+function update() {
+    // ...
+
+    if (gameOver) {
+        context.drawImage(gameOverImg, boardWidth/2 - gameOverImg.width/2, boardHeight/2 - gameOverImg.height/2);
+        context.drawImage(resetImg, boardWidth/2 - resetImg.width/2, boardHeight/2 + gameOverImg.height/2 + 20);
+        return;
+    }
+
+    // ...
+}
+
+// ...
